@@ -1,10 +1,28 @@
+'use client'
+import { useEffect, useState } from "react";
 
 export default function Home() {
-     const regulations={
-          "1":"R22",
-          "2":"R18",
-          "3":"R16",
-     }
+     const [regulations,setRegulations]=useState([]);
+
+     useEffect(()=>{
+          async function fetchReg() {
+               const token=sessionStorage.getItem('token')
+               const response = fetch('http://localhost:3001/Regulations',{
+                    "method":"GET",
+                    "headers":{
+                         "Content-Type": "application/json",
+                         "Autherization": `Bearer ${token}`
+                    }
+               })
+               .then(response => response.json())
+               .then(data => {
+                    console.log(data)
+                    setRegulations(data);
+               })
+          }
+          fetchReg();
+     },[])
+     
      return (
           <main>
                
@@ -53,7 +71,7 @@ export default function Home() {
                          {Object.keys(regulations).map((key) => (
                               <div key={key} className="bg-slate-600 shadow-md  rounded-lg  px-4 py-2 mb-3">
                                    <div className="flex justify-between items-center ">
-                                        <h2 className="text-xl font-bold text-white">{regulations[key]}</h2>
+                                        <h2 className="text-xl font-bold text-white">{regulations[key].name}</h2>
                                         <div>
                                              <button type="button" className="bg-blue-600 px-4 py-2 rounded text-white mx-2">Edit</button>
                                              <button type="button" className="bg-red-600 px-4 py-2 rounded text-white">Remove</button>

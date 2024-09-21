@@ -87,26 +87,11 @@ export default function Home() {
           setInputFields2(updatedFields);
      };
 
-     // submit
-     // const handleSubmit = async () => {
-     //      try {
-     //        const response = await fetch('/api/submit', {
-     //          method: 'POST',
-     //          headers: {
-     //            'Content-Type': 'application/json',
-     //          },
-     //          body: JSON.stringify(inputFields),
-     //        });
-      
-     //        if (response.ok) {
-     //          console.log('Data submitted successfully');
-     //        } else {
-     //          console.error('Error submitting data');
-     //        }
-     //      } catch (error) {
-     //        console.error('Error submitting data:', error);
-     //      }
-     //    };
+     function handleSubmit(e) {
+          e.preventDefault();
+          
+          console.log(inputFields1,inputFields2)
+     }
 
 
 
@@ -147,8 +132,8 @@ export default function Home() {
                               <h5 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Semester 1</h5>
                               <div id="sem1">
                                    {inputFields1.map((field, index) => (
-                                        <div className="py-4">
-                                             <div>
+                                        <div className="py-4 flex">
+                                             <div className="px-3">
                                                   <label for="SubjectName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subject Name</label>
                                                   <input type="text" id="SubjectName" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Subject Name" required />
                                              </div>
@@ -274,7 +259,7 @@ export default function Home() {
                               </div>
                               <button onClick={handleAddInputField8} className="my-3 inline-flex items-center justify-center px-2 py-2 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">Add Subject</button>
                               <br></br>
-                              {/* <button className="my-3 inline-flex items-center justify-center px-2 py-2 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900" onClick={handleSubmit}>Submit</button> */}
+                              <button className="my-3 inline-flex items-center justify-center px-2 py-2 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900" onClick={handleSubmit}>Submit</button>
                          </form>
                     </div>
                </div>
