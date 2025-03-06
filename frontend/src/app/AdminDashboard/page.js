@@ -11,7 +11,7 @@ export default function Home() {
                     "method":"GET",
                     "headers":{
                          "Content-Type": "application/json",
-                         "Autherization": `Bearer ${token}`
+                         'Authorization': `Bearer ${token}`
                     }
                })
                .then(response => response.json())
@@ -73,7 +73,7 @@ export default function Home() {
                                    <div className="flex justify-between items-center ">
                                         <h2 className="text-xl font-bold text-white">{regulations[key].name}</h2>
                                         <div>
-                                             <button type="button" className="bg-blue-600 px-4 py-2 rounded text-white mx-2">Edit</button>
+                                             <a type="button" className="bg-blue-600 px-4 py-2 rounded text-white mx-2" href={`/EditRegulation/${regulations[key]._id}`} >Edit</a>
                                              <button type="button" className="bg-red-600 px-4 py-2 rounded text-white">Remove</button>
 
                                         </div>

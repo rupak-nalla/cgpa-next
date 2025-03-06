@@ -86,23 +86,57 @@ app.get('/regulations',async (req,res)=>{
   res.json(regulations);
 })
 
-app.post('/regulations',expressJwt({ secret: "shhhhhhared-secret", algorithms: ["HS256"] }),async (req,res)=>{
-  try{
-    const regs = await Regulation.find();
-    for(let i=0; i<regs.length;i++){
-      if(regs[i].name===req.body.name){
-        throw new ExistsError('Regulation already exists')
-      }
+app.get('/regulations/:id',async (req,res)=>{
+  try {
+    const regId = req.params.id; // Retrieve the id from the route parameters
+    const reg = await Regulation.findById(regId); // Use regId instead of id
+
+    if (!reg) {
+      return res.status(404).json({ msg: 'Regulation not found' });
     }
-    const newReg = new Regulation(req.body);
-    await newReg.save();
-    res.status(201).json(newReg);
-  }catch(err){
-    if(err instanceof ExistsError){
-      res.sendStatus(409).json({'msg':'Regulation already exists'})
-    }
+
+    console.log(reg);
+    return res.status(200).json(reg); // Use res.status(200) instead of res.statusCode(200)
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ msg: 'Server error' });
   }
 })
+
+app.post('/regulations', expressJwt({ secret: "shhhhhhared-secret", algorithms: ["HS256"] }), async (req, res) => {
+  try {
+    console.log(req.body);
+    console.log(req.body.semesters);
+
+    // Check if regulation already exists
+    const regs = await Regulation.find();
+    console.log(regs);
+    for (let i = 0; i < regs.length; i++) {
+      if (regs[i].name === req.body.name) {
+        throw new ExistsError('Regulation already exists');
+      }
+    }
+
+    // Create and save new regulation
+    console.log("before save");
+    const newReg = new Regulation(req.body);
+    await newReg.save();
+    console.log("reached");
+
+    // Send successful response
+    return res.status(201).json(newReg); // Use return here
+  } catch (err) {
+    // Handle the ExistsError
+    console.log(err);
+    if (err instanceof ExistsError) {
+      return res.status(409).json({ 'msg': 'Regulation already exists' }); // Use return here
+    }
+
+    // Handle other errors
+    return res.status(500).json({ 'msg': 'Some error occurred' }); // Use return here
+  }
+});
+
 
 app.put('/regulations',expressJwt({ secret: "shhhhhhared-secret", algorithms: ["HS256"] }),async (req,res)=>{
   try{
