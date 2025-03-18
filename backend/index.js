@@ -106,7 +106,7 @@ app.get('/regulations/:id',async (req,res)=>{
 app.post('/regulations', expressJwt({ secret: "shhhhhhared-secret", algorithms: ["HS256"] }), async (req, res) => {
   try {
     console.log(req.body);
-    console.log(req.body.semesters);
+    console.log(req.body.branches);
 
     // Check if regulation already exists
     const regs = await Regulation.find();
@@ -140,22 +140,126 @@ app.post('/regulations', expressJwt({ secret: "shhhhhhared-secret", algorithms: 
 
 app.put('/regulations',expressJwt({ secret: "shhhhhhared-secret", algorithms: ["HS256"] }),async (req,res)=>{
   try{
-    const regs = await Regulation.find();
-    for(let i=0; i<regs.length;i++){
-      if(regs[i].name===req.body.name){
-        throw new ExistsError('Regulation already exists')
-      }
-    }
-    const reg = await Regulation.findById(req.body._id)
+    console.log("put req")
+    const reg = await Regulation.findById(req.body._id);
+    console.log(req.body);
     console.log(reg);
     if(!reg){
       throw new NotFoundError('Regulation Not Found');
     }
-    reg.name=req.body.name
-    reg.description=req.body.description
-    reg.semesters=req.body.semesters
+
+    // regname change
+    console.log("ok-0")
+    if(req.body.changes.RegName){
+      reg.name=req.body.changes.RegName;
+      console.log("ok-regname")
+    }
+
+    // modify branches
+    console.log("ok-1")
+    if (req.body.changes.ModifiedBranches?.length>0){
+      req.body.changes.ModifiedBranches.forEach((branch)=>{
+        console.log(branch);
+        if (branch.newName){
+          reg.branches[branch.index].branch_name=branch.newName;
+        }
+      })
+    }
+    // add branches (done)
+    console.log("ok-2");
+    if(req.body.changes.AddBranches.length>0){
+      reg.branches.push(...req.body.changes.AddBranches);
+      console.log("ok-addBranch")
+    }
+
+    // remove branches
+    console.log("ok-3")
+    if(req.body.changes.RemoveBranches.length>0){
+      reg.branches = reg.branches.filter(branch => !req.body.changes.RemoveBranches.includes(branch));
+      console.log("ok-removeBranch")
+    }
+
+    // add semesters (done)
+    console.log("ok-4")
+    if(req.body.changes.AddSemesters.length>0){
+      console.log(req.body.changes.AddSemesters);
+      req.body.changes.AddSemesters.forEach(sem => {
+        console.log("Inloop")
+        console.log(sem);
+        reg.branches[sem.branchIndex].semesters.push(sem.semester);
+      });
+      // reg.semesters.push(...req.body.changes.AddSemesters);
+      console.log("ok-addSem")
+    }
+
+    // remove semesters
+    console.log("ok-5")
+    if(req.body.changes.RemoveSemesters.length>0){
+      reg.semesters = reg.semesters.filter(semester => !req.body.changes.RemoveSemesters.includes(semester));
+      console.log("ok-removeSem")
+    }
+
+    // add subjects (done)
+    console.log("ok-6")
+    if(req.body.changes.AddSubjects.length>0){
+      console.log(req.body.changes.AddSubjects);
+      req.body.changes.AddSubjects.forEach((subject)=>{
+        // console.log(subject);
+        // console.log(reg.branches[subject.branchIndex]);
+        reg.branches[subject.branchIndex].semesters[subject.semesterIndex].subjects.push(subject.subject);
+
+        console.log("ok-addSub")
+      })
+    }
+
+    // remove subjects
+    console.log( "ok-7")
+    if(req.body.changes.RemoveSubjects.length>0){
+      req.body.changes.RemoveSubjects.forEach((subject)=>{
+        const semester = reg.semesters.find(semester=>semester.semester===subject.semester);
+        semester.subjects = semester.subjects.filter(sub => sub.subjectName!==subject.subjectName);
+      })
+      console.log("ok-removeSub")
+    }
+
+    // modify subjects
+    console.log("ok-8")
+    if(req.body.changes.ModifySubjects.length>0){
+      req.body.changes.ModifySubjects.forEach((subject)=>{
+        console.log(subject);
+        if (subject.subjectName){
+          reg.branches[subject.branchIndex].semesters[subject.semesterIndex].subjects[subject.subjectIndex].subjectName=subject.subjectName;
+        }
+        if (subject.credits){
+
+          reg.branches[subject.branchIndex].semesters[subject.semesterIndex].subjects[subject.subjectIndex].credits=subject.credits;
+        }
+        // const semester = reg.semesters.find(semester=>semester.semester===subject.semester);
+        // const sub = semester.subjects.find(sub=>sub.subjectName===subject.subjectName);
+        // sub.credits=subject.credits;
+      })
+      console.log("ok-modifySub")
+    }
     await reg.save();
-    res.status(201).json({"msg":"success"})
+    res.status(200).json({"msg":"success"});
+    // reg.name=req.body.name
+    // reg.description=req.body.description
+    // reg.semesters=req.body.semesters
+    // await reg.save();
+    // {
+    //   _id: '67d2c2fb60de623760cb2f68',
+    //   changes: {
+    //     RegName: '',
+    //     AddBranches: [],
+    //     RemoveBranches: [],
+    //     AddSemesters: [],
+    //     RemoveSemesters: [],
+    //     AddSubjects: [ [Object] ],
+    //     RemoveSubjects: [],
+    //     ModifySubjects: []
+    //   }
+    // }
+    // res.status(201).json({"msg":"success"})
   }
   catch(err){
     if(err instanceof NotFoundError || err instanceof ExistsError){
@@ -165,7 +269,29 @@ app.put('/regulations',expressJwt({ secret: "shhhhhhared-secret", algorithms: ["
   }
 })
 
+app.delete('/regulations',expressJwt({ secret: "shhhhhhared-secret", algorithms: ["HS256"] }),async (req,res)=>{
+  try{
+    console.log("delete req");
+    console.log(req.body.id);
+    // const reg = await Regulation.findById(req.body.id);
+    const reg = await Regulation.findByIdAndDelete(req.body.id);
 
+    // console.log(reg);
+    if(!reg){
+      throw new NotFoundError("Regulation Not Found");
+    }
+    console.log(reg)
+    // await reg.delete();
+    res.status(200).json({"msg":"success"});
+  }
+  catch(err){
+    console.error("Error deleting regulation:", err);
+    if(err instanceof NotFoundError){
+      return res.status(err.statusCode).json({ error: err.message });
+    }
+    return res.status(500).json({"msg":"Internal serever error"});
+  }
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

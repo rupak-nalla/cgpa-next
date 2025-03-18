@@ -6,21 +6,27 @@ export default function CreateRegulation() {
   const [regulationName, setRegulationName] = useState('');
   const [branches, setBranches] = useState([{'branch_name':'CSE','semesters':[{ semester: 1, subjects: [{ subjectName: '', credits: 0 }] }]}]);
      
-//   const handleBranchChange = (index,field,value)=>{
-//      const updatedBranches =[...branches];
-//      updatedBranches[index][field]=value;
-//      setBranches(updatedBranches);
-//   }
+  const handleBranchChange = (index,branchName,value)=>{
+     const updatedBranches =[...branches];
+     updatedBranches[index]["branch_name"]=value;
+     setBranches(updatedBranches);
+  }
   const handleSemesterChange = (index, field, value) => {
-    const updatedSemesters = [...semesters];
+    const updatedSemesters = [...branches.semesters];
     updatedSemesters[index][field] = value;
-    setSemesters(updatedSemesters);
+//     setSemesters(updatedSemesters);
+     
   };
 
-  const handleSubjectChange = (semesterIndex, subjectIndex, field, value) => {
-    const updatedSemesters = [...semesters];
-    updatedSemesters[semesterIndex].subjects[subjectIndex][field] = value;
-    setSemesters(updatedSemesters);
+  const handleSubjectChange = (semesterIndex, subjectIndex,branchIndex, field, value) => {
+//     const updatedSemesters = [...branches[branchIndex].semesters];
+//     updatedSemesters[semesterIndex].subjects[subjectIndex][field] = value;
+//     setSemesters(updatedSemesters);
+     const updatedBranches = [...branches];
+     const updatedSemesters = [...updatedBranches[branchIndex].semesters];
+     updatedSemesters[semesterIndex].subjects[subjectIndex][field] = value;
+     updatedBranches[branchIndex].semesters = updatedSemesters;
+     setBranches(updatedBranches);
   };
 
   const addBranch =() =>{
@@ -44,6 +50,9 @@ export default function CreateRegulation() {
 };
 
   const addSubject = (semesterIndex,branchIndex) => {
+     console.log(semesterIndex,branchIndex)
+     console.log(branches)
+     // branches[branchIndex].semesters[semesterIndex].subjects.push({ subjectName: '', credits: 0 });
      const updatedBranches = [...branches];
      const updatedSemesters = [...updatedBranches[branchIndex].semesters];
      updatedSemesters[semesterIndex].subjects.push({ subjectName: '', credits: 0 });
@@ -53,11 +62,11 @@ export default function CreateRegulation() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(regulationName,semesters);
+    console.log(regulationName, branches);
     const body={
      "name":regulationName,
-     "description":"",
-     "semesters":semesters
+     "description":"RegulationDescription",
+     "branches":branches
     }
     const token = sessionStorage.getItem('token');
     console.log(body);
@@ -130,7 +139,7 @@ export default function CreateRegulation() {
                                         type='text' 
                                         id={`branch-name-${branchIndex}`} 
                                         value={branch.branch_name} 
-                                        onChange={(e) => handleBranchNameChange(e, branchIndex)} 
+                                        onChange={(e) => handleBranchChange(branchIndex, 'branch_name', e.target.value)} 
                                    />
                               </div>
                               <div className='m-4'>
@@ -145,19 +154,19 @@ export default function CreateRegulation() {
                                                                  type="text"
                                                                  placeholder="Subject Name"
                                                                  value={subject.name}
-                                                                 onChange={(e) => handleSubjectChange(semesterIndex, subjectIndex, 'subjectName', e.target.value)}
+                                                                 onChange={(e) => handleSubjectChange(semesterIndex, subjectIndex,branchIndex ,'subjectName', e.target.value)}
                                                                  className="p-2 border border-gray-300 rounded-md mr-2"
                                                             />
                                                             <input
                                                                  type="number"
                                                                  placeholder="Credits"
                                                                  value={subject.credits}
-                                                                 onChange={(e) => handleSubjectChange(semesterIndex, subjectIndex, 'credits', e.target.value)}
+                                                                 onChange={(e) => handleSubjectChange(semesterIndex, subjectIndex,branchIndex, 'credits', e.target.value)}
                                                                  className="p-2 border border-gray-300 rounded-md"
                                                             />
                                                        </div>
                                                   ))}
-                                                  <button type="button" onClick={() => addSubject(branchIndex,semesterIndex)} className="text-blue-500 px-4">
+                                                  <button type="button" onClick={() => addSubject(semesterIndex,branchIndex)} className="text-blue-500 px-4">
                                                   Add Subject
                                                   </button>
                                              </div>

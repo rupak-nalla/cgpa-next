@@ -1,4 +1,6 @@
 'use client'
+import Link from 'next/link'
+
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -22,7 +24,29 @@ export default function Home() {
           }
           fetchReg();
      },[])
-     
+     async function removeReg(RegId) {
+          const isconfirm = confirm("Are you sure you want to delete this regulation?");
+          console.log(isconfirm)
+          if (isconfirm) {
+               const token=sessionStorage.getItem('token')
+               const response = fetch(`http://localhost:3001/regulations`,{
+                    "method":"DELETE",
+                    "headers":{
+                         "Content-Type": "application/json",
+                         'Authorization': `Bearer ${token}`
+                    },
+                    "body":JSON.stringify({
+                         "id":RegId
+                    })
+               })
+               .then(response => response.json())
+               .then(data => {
+                    console.log(data)
+                    setRegulations(data);
+               })
+          }
+          
+     }
      return (
           <main>
                
@@ -67,14 +91,14 @@ export default function Home() {
 
                     <hr class="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700"></hr>
                     <div id="regulations">
-                         
+                         {regulations.length===0 && <h1 className="text-white">No Regulations Found</h1>}
                          {Object.keys(regulations).map((key) => (
                               <div key={key} className="bg-slate-600 shadow-md  rounded-lg  px-4 py-2 mb-3">
                                    <div className="flex justify-between items-center ">
                                         <h2 className="text-xl font-bold text-white">{regulations[key].name}</h2>
                                         <div>
                                              <a type="button" className="bg-blue-600 px-4 py-2 rounded text-white mx-2" href={`/EditRegulation/${regulations[key]._id}`} >Edit</a>
-                                             <button type="button" className="bg-red-600 px-4 py-2 rounded text-white">Remove</button>
+                                             <button type="button" onClick={()=>{removeReg(regulations[key]._id)}} className="bg-red-600 px-4 py-2 rounded text-white">Remove</button>
 
                                         </div>
                                    </div>
