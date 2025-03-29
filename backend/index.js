@@ -4,7 +4,7 @@ const Regulation = require('./models/regulations');
 const Users = require('./models/users')
 const cors = require('cors');
 
-
+var cals=0
 const app = express()
 const port = 3001
 
@@ -49,7 +49,8 @@ app.get('/', expressJwt({ secret: "shhhhhhared-secret", algorithms: ["HS256"] })
 app.post('/login',async(req,res)=>{
   const { username,password } = req.body;
   console.log(username,password)
-  const user = Users.findOne({ username: username, password: password })
+  const user = await Users.findOne({ username: username, password: password })
+  console.log(user)
   if (user) {
     // Generate JWT token
     const token = jwt.sign({ username: user.username }, "shhhhhhared-secret", { expiresIn: '1h' });
@@ -291,6 +292,19 @@ app.delete('/regulations',expressJwt({ secret: "shhhhhhared-secret", algorithms:
     }
     return res.status(500).json({"msg":"Internal serever error"});
   }
+})
+
+
+app.post("/increment-calculations",async (req,res) => {
+  cals++;
+  console.log("incremented");
+  console.log(cals);
+  res.status(200).json({"msg":"success"});
+})
+
+app.get("/get-calculations",async (req,res) => {
+  console.log("get calculations");
+  res.status(200).json({"cals":cals});
 })
 
 app.listen(port, () => {

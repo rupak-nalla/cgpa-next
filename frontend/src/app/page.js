@@ -1,52 +1,96 @@
-import Image from "next/image";
-import Link from 'next/link';
-export default function Home() {
-  
-  return (
-    <main>
-      <nav class="bg-white border-gray-200 dark:bg-gray-900">
-        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <a href="https://flowbite.com/" class="flex items-center space-x-3 rtl:space-x-reverse">
-              <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
-              <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">CGPA Calculator</span>
-          </a>
-          <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
-              <span class="sr-only">Open main menu</span>
-              <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-              </svg>
-          </button>
-          <div class="hidden w-full md:block md:w-auto" id="navbar-default">
-            <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-              <li>
-                <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"><a href="/Login">Login</a></button>
+import Link from "next/link"
+import { Menu } from "lucide-react"
 
+export default function Home() {
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
+      <nav className="bg-white/5 backdrop-blur-lg border-b border-slate-700">
+        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+          <Link href="/" className="flex items-center space-x-3">
+            <div className="relative h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center">
+              <span className="text-white font-bold text-lg">C</span>
+            </div>
+            <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">CGPA Calculator</span>
+          </Link>
+
+          <button
+            data-collapse-toggle="navbar-default"
+            type="button"
+            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-400 rounded-lg md:hidden hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-600"
+            aria-controls="navbar-default"
+            aria-expanded="false"
+          >
+            <span className="sr-only">Open main menu</span>
+            <Menu className="w-5 h-5" />
+          </button>
+
+          <div className="hidden w-full md:block md:w-auto" id="navbar-default">
+            <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-4 md:mt-0">
+              <li>
+                <Link
+                  href="/Login"
+                  className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 transition-all duration-200"
+                >
+                  Login
+                </Link>
               </li>
-              
             </ul>
           </div>
         </div>
       </nav>
-      <div id="main" className="min-h-screen bg-slate-800">
-        <div className="flex justify-center h-screen items-center">
 
-          <header className="text-center p-4 ">
-            <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Calculate Your CGPA</h1>
-            <p class="mb-6 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">Specially designed for JNTUH Students</p>
-            <a href="/Home" class="transition ease-in-out delay-150 hover:scale-110  duration-300 inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col justify-center items-center min-h-[calc(100vh-76px)]">
+          <div className="max-w-3xl text-center">
+            <div className="mb-2 inline-block px-3 py-1 rounded-full bg-blue-900/30 text-blue-400 text-sm font-medium">
+              JNTUH Students
+            </div>
+            <h1 className="mb-6 text-4xl font-bold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
+              Calculate Your <span className="text-blue-500">CGPA</span> With Precision
+            </h1>
+            <p className="mb-8 text-lg font-normal text-slate-400 lg:text-xl max-w-2xl mx-auto">
+              A professional tool specially designed for JNTUH Students to track and calculate their academic
+              performance efficiently.
+            </p>
+
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link
+                href="/Home"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-800 transition-all duration-300 shadow-lg shadow-blue-900/30"
+              >
                 Get Started
-                <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-              </svg>
-            </a>
-            <a href="/Login">
+                <svg
+                  className="w-3.5 h-3.5 ms-2"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M1 5h12m0 0L9 1m4 4L9 9"
+                  />
+                </svg>
+              </Link>
 
-              <button type="button" className="transition ease-in-out delay-150 hover:scale-110  duration-300 mx-2 px-5 py-3 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Admin Login</button>
-            </a>
-          </header>
+              <Link
+                href="/Login"
+                className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-center text-blue-400 border border-blue-500 rounded-lg hover:bg-blue-900/30 focus:ring-4 focus:ring-blue-800 transition-all duration-300"
+              >
+                Admin Login
+              </Link>
+            </div>
+
+            <div className="mt-12 flex justify-center">
+              <div className="h-1 w-20 bg-blue-600 rounded-full"></div>
+            </div>
+          </div>
         </div>
-        
       </div>
     </main>
-  );
+  )
 }
+

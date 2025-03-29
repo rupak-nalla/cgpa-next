@@ -1,116 +1,230 @@
-'use client'
-import Image from "next/image";
-import Link from 'next/link';
+"use client"
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useState} from "react";
-export default function Home() {
-     const router = useRouter();
-     const [isLoading,setLoading]= useState(false);
-     const [st,setst]=useState(0)
-     useEffect(()=>{
-          function changeLoading(params) {
-               if (isLoading){
-                    setLoading(false)
-               }else{
-                    setLoading(true)
-               }
-          }
-     },[])
-     async function HandleLogin() {
-          // changeLoading();
-          setLoading(true);
-          const username =document.getElementById('username').value;
-          const password = document.getElementById('password').value;
-          if (!username) {
-               alert("username is required");
-          }
-          if(!password){
-               alert("password is required");
-          }
-          const b = {
-               "username": username,
-               "password": password
-          }
-          const body = JSON.stringify(b) 
-          const response = fetch ('http://localhost:3001/Login',{
-               method:"POST",
-               body:body
-          })
-          .then(response => response.json())
-          .then(data => {
-               sessionStorage.setItem('token',data.token);
-               router.push('/AdminDashboard')
-          })
-          .catch(error => {
-               console.error('Error:', error);
-           });
-          
-          setLoading(false);
-     }
-     return (
-          <main>
-               {
-                    isLoading?(
-                         <div>
-                              Loading...
-                         </div>
-                    ):(
-                         
-                         <div>
-                         <nav class="bg-white border-gray-200 dark:bg-gray-900">
-                              <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-                                   <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-                                        <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
-                                        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">CGPA Calculator</span>
-                                   </a>
-                                   <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
-                                        <span class="sr-only">Open main menu</span>
-                                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-                                        </svg>
-                                   </button>
-                                   <div class="hidden w-full md:block md:w-auto" id="navbar-default">
-                                        <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-                                             <li>
-                                                  <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"><a href="/Login">Login</a></button>
-                                             </li>
-                                        </ul>
-                                   </div>
-                              </div>
-                         </nav>
-                         <div id="main" className="min-h-screen bg-slate-800 flex justify-center">
+import { useState } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { Menu, Lock, Mail, Loader2, LogIn, AlertCircle } from "lucide-react"
 
-                              <div class="m-3 h-fit w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-lg shadow-slate-600/55 sm:p-6 md:p-8 dark:bg-gray-900 dark:border-gray-700">
-                                   <form class="space-y-6" action="#">
-                                        <h5 class="text-xl font-medium text-gray-900 dark:text-white text-center ">Admin Login</h5>
-                                        <div>
-                                             <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-                                             <input type="text" name="email" id="username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" required />
-                                        </div>
-                                        <div>
-                                             <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
-                                             <input type="password" name="password" id="password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
-                                        </div>
-                                        <div class="flex items-start">
-                                             <div class="flex items-start">
-                                                  <div class="flex items-center h-5">
-                                                       <input id="remember" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800" required />
-                                                  </div>
-                                                  <label for="remember" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Remember me</label>
-                                             </div>
-                                             <a href="#" class="ms-auto text-sm text-blue-700 hover:underline dark:text-blue-500">Lost Password?</a>
-                                        </div>
-                                        <button onClick={HandleLogin} type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login to your account</button>
-                                        
-                                   </form>
-                              </div>
+export default function Login() {
+  const router = useRouter()
+  const [isLoading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  })
+  const [errors, setErrors] = useState({
+    username: "",
+    password: "",
+    general: "",
+  })
 
-                         </div>
-                    </div>
-                    )
-               }
-               
-          </main>
-          );
+  const handleInputChange = (e) => {
+    const { id, value } = e.target
+    setFormData({
+      ...formData,
+      [id]: value,
+    })
+
+    // Clear error when user types
+    if (errors[id]) {
+      setErrors({
+        ...errors,
+        [id]: "",
+      })
+    }
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault()
+
+    // Validate form
+    let hasErrors = false
+    const newErrors = { username: "", password: "", general: "" }
+
+    if (!formData.username) {
+      newErrors.username = "Username is required"
+      hasErrors = true
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required"
+      hasErrors = true
+    }
+
+    if (hasErrors) {
+      setErrors(newErrors)
+      return
+    }
+
+    // Proceed with login
+    setLoading(true)
+
+    try {
+      const response = await fetch("http://localhost:3001/Login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed")
+      }
+
+      sessionStorage.setItem("token", data.token)
+      router.push("/AdminDashboard")
+    } catch (error) {
+      console.error("Error:", error)
+      setErrors({
+        ...errors,
+        general: error.message || "Login failed. Please check your credentials.",
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
+      <nav className="bg-white/5 backdrop-blur-lg border-b border-slate-700">
+        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+          <Link href="/" className="flex items-center space-x-3">
+            <div className="relative h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center">
+              <span className="text-white font-bold text-lg">C</span>
+            </div>
+            <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">CGPA Calculator</span>
+          </Link>
+
+          <button
+            data-collapse-toggle="navbar-default"
+            type="button"
+            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-400 rounded-lg md:hidden hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-600"
+            aria-controls="navbar-default"
+            aria-expanded="false"
+          >
+            <span className="sr-only">Open main menu</span>
+            <Menu className="w-5 h-5" />
+          </button>
+        </div>
+      </nav>
+
+      <div className="flex items-center justify-center min-h-[calc(100vh-76px)] px-4">
+        <div className="w-full max-w-md">
+          {/* Login Card */}
+          <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-8 shadow-xl">
+            {/* Card Header */}
+            <div className="mb-8 text-center">
+              <div className="mx-auto w-16 h-16 flex items-center justify-center rounded-full bg-blue-600/20 mb-4">
+                <Lock className="h-8 w-8 text-blue-400" />
+              </div>
+              <h1 className="text-2xl font-bold text-white">Admin Login</h1>
+              <p className="text-slate-400 mt-2">Access the administrator dashboard</p>
+            </div>
+
+            {/* Error Message */}
+            {errors.general && (
+              <div className="mb-6 p-4 bg-red-900/30 border border-red-800 rounded-lg flex items-center gap-2 text-red-300">
+                <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                <p>{errors.general}</p>
+              </div>
+            )}
+
+            {/* Login Form */}
+            <form className="space-y-6" onSubmit={handleLogin}>
+              <div>
+                <label htmlFor="username" className="block mb-2 text-sm font-medium text-white">
+                  Username
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <Mail className="h-5 w-5 text-slate-400" />
+                  </div>
+                  <input
+                    type="text"
+                    id="username"
+                    value={formData.username}
+                    onChange={handleInputChange}
+                    className={`bg-slate-700 border ${errors.username ? "border-red-500" : "border-slate-600"} text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-3`}
+                    placeholder="admin@example.com"
+                  />
+                </div>
+                {errors.username && <p className="mt-1 text-sm text-red-400">{errors.username}</p>}
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block mb-2 text-sm font-medium text-white">
+                  Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <Lock className="h-5 w-5 text-slate-400" />
+                  </div>
+                  <input
+                    type="password"
+                    id="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className={`bg-slate-700 border ${errors.password ? "border-red-500" : "border-slate-600"} text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-3`}
+                    placeholder="••••••••"
+                  />
+                </div>
+                {errors.password && <p className="mt-1 text-sm text-red-400">{errors.password}</p>}
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id="remember"
+                    type="checkbox"
+                    className="w-4 h-4 bg-slate-700 border-slate-600 rounded focus:ring-blue-600 focus:ring-2"
+                  />
+                  <label htmlFor="remember" className="ml-2 text-sm text-slate-300">
+                    Remember me
+                  </label>
+                </div>
+                <a href="#" className="text-sm text-blue-400 hover:text-blue-300 transition-colors">
+                  Forgot password?
+                </a>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-800 text-white font-medium rounded-lg text-sm px-5 py-3 transition-all duration-200 disabled:opacity-70"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span>Logging in...</span>
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="h-5 w-5" />
+                    <span>Sign in</span>
+                  </>
+                )}
+              </button>
+
+              <div className="text-center mt-4">
+                <Link href="/" className="text-sm text-slate-400 hover:text-white transition-colors">
+                  Return to home page
+                </Link>
+              </div>
+            </form>
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-sm text-slate-500">© {new Date().getFullYear()} CGPA Calculator for JNTUH Students</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  )
 }
+
